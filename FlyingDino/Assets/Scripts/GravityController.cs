@@ -2,9 +2,11 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class GravityController : MonoBehaviour
 {
     private Rigidbody2D rigid;
+    public bool useGravity = true;
 
     private Transform closestPlanet
     {
@@ -56,11 +58,16 @@ public class GravityController : MonoBehaviour
 
     void Update()
     {
-        ApplyGravity();
+        if(useGravity)
+            ApplyGravity();
     }
 
     void ApplyGravity()
     {
         transform.position += gravityDirection * gravityStr * Time.deltaTime;
+    }
+    
+    void OnCollisionEnter2D(Collision2D other) {
+        if (other.gameObject.tag == "Planet") Destroy(this.gameObject);
     }
 }

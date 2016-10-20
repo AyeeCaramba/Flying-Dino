@@ -10,6 +10,7 @@ public class OrbitalRotation : MonoBehaviour
     #region Modifiers
 
     public float correctionSpeed = 5f;
+    public bool useCorrection = true;
 
     #endregion
 
@@ -83,8 +84,11 @@ public class OrbitalRotation : MonoBehaviour
 
     void Update()
     {
-        CorrectionCheck();
-        ApplyRotation();
+        if (useCorrection)
+        {
+            CorrectionCheck();
+            ApplyRotation();
+        }
     }
 
     #endregion
