@@ -89,19 +89,17 @@ public class PlayerController : MonoBehaviour
         rBody = GetComponent<Rigidbody2D>();
 
         collider = GetComponent<Collider2D>();
+    }
 
+    // Use this for initialization
+    void Start ()
+    {
         PlayerManager.instance.localPlayers.Add(this);
         PlayerManager.instance.players.Add(this);
 
         playerNumber = PlayerManager.instance.players.Count;
         localPlayerNumber = PlayerManager.instance.localPlayers.Count;
     }
-
-    // Use this for initialization
-    void Start ()
-    {
-	    
-	}
 	
 	// Update is called once per frame
 	void Update ()

@@ -29,6 +29,7 @@ public class PlayerManager : MonoBehaviour
         else Destroy(gameObject);
 
         players = new List<PlayerController>();
+        localPlayers = new List<PlayerController>();
     }
 
     void OnLevelWasLoaded()
