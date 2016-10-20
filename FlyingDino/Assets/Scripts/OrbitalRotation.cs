@@ -3,6 +3,29 @@ using System.Collections;
 
 public class OrbitalRotation : MonoBehaviour
 {
+
+    #region Variables
+
+    #region Modifiers
+
+    public float correctionSpeed = 5f;
+
+    #endregion
+
+    #region Transforms
+
+    Transform lastClosestPlanet;
+
+    #endregion
+
+    #region Checks
+
+    bool correctingRotation = false;
+
+    #endregion
+
+    #region Properties
+
     private Transform closestPlanet
     {
         get
@@ -18,6 +41,7 @@ public class OrbitalRotation : MonoBehaviour
                 foreach (Transform tForm in PlanetManager.instance.planetTransforms)
                 {
                     float dist = Vector3.Distance(tForm.position, transform.position);
+                    dist -= (Vector3.Magnitude(tForm.localScale) * 0.5f);
                     if (dist < result)
                     {
                         result = dist;
@@ -25,12 +49,25 @@ public class OrbitalRotation : MonoBehaviour
                     }
                 }
 
-                if (target != null) return target;
+                if (target != null)
+                {
+                    lastClosestPlanet = target;
+                    return target;
+                }
                 else return null;
             }
             else return null;
         }
     }
+
+    #endregion
+
+    #endregion
+
+    #region Functions
+
+    #region Unity
+
     private Vector3 gravityDirection
     {
         get
@@ -46,6 +83,29 @@ public class OrbitalRotation : MonoBehaviour
     
     void Update()
     {
-        this.transform.up = -gravityDirection;
+        CorrectionCheck();
+        ApplyRotation();
     }
+
+    #endregion
+
+    void ApplyRotation()
+    {
+        if(!correctingRotation)
+            transform.up = gravityDirection;
+        else
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(transform.forward, gravityDirection), correctionSpeed * Time.deltaTime);
+    }
+
+    void CorrectionCheck()
+    {
+        if (!correctingRotation)
+            correctingRotation = (lastClosestPlanet != closestPlanet);
+
+        else if (Quaternion.Angle(transform.rotation, Quaternion.LookRotation(transform.forward, gravityDirection)) < 3)
+            correctingRotation = false;
+    }
+
+    #endregion
+
 }

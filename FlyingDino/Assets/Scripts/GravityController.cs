@@ -19,6 +19,7 @@ public class GravityController : MonoBehaviour
                 foreach (Transform tForm in PlanetManager.instance.planetTransforms)
                 {
                     float dist = Vector3.Distance(tForm.position, transform.position);
+                    dist -= (Vector3.Magnitude(tForm.localScale) * 0.5f);
                     if (dist < result)
                     {
                         result = dist;
