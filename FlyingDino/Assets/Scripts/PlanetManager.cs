@@ -5,16 +5,39 @@ using System.Collections;
 public class PlanetManager : MonoBehaviour
 {
 
-    public static PlanetManager instance { get; set; }
+    private static PlanetManager _instance;
 
-    public static List<Transform> planetTransforms;
+    public static PlanetManager instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
+
+    private List<Transform> _planetTransforms;
+
+    public List<Transform> planetTransforms
+    {
+        get
+        {
+            if (_planetTransforms == null) _planetTransforms = new List<Transform>();
+            return _planetTransforms;
+        }
+    }
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
-        planetTransforms = new List<Transform>();
-        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Planet")) {
-            planetTransforms.Add(obj.transform);
+        if (!_instance)
+            _instance = this;
+
+        else Destroy(gameObject);
+
+        _planetTransforms = new List<Transform>();
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Planet"))
+        {
+            _planetTransforms.Add(obj.transform);
         }
     }
 }

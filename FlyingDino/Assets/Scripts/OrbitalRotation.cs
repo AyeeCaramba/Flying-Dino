@@ -1,18 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class GravityController : MonoBehaviour
+public class OrbitalRotation : MonoBehaviour
 {
-    private Rigidbody2D rigid;
-
     private Transform closestPlanet
     {
         get
         {
-            if (PlanetManager.instance.planetTransforms != null &&
+            PlanetManager reference = PlanetManager.instance;
+            if (reference.planetTransforms != null &&
                 PlanetManager.instance.planetTransforms.Count > 0)
             {
+
                 float result = float.MaxValue;
                 Transform target = null;
 
@@ -32,7 +31,6 @@ public class GravityController : MonoBehaviour
             else return null;
         }
     }
-
     private Vector3 gravityDirection
     {
         get
@@ -40,26 +38,14 @@ public class GravityController : MonoBehaviour
             Transform target = closestPlanet;
 
             if (target != null)
-                return (target.position - transform.position).normalized;
+                return (transform.position - target.position).normalized;
 
             else return Vector3.zero;
         }
     }
-
-    public float gravityStr;
-
-    void Start()
-    {
-        rigid = GetComponent<Rigidbody2D>();
-    }
-
+    
     void Update()
     {
-        ApplyGravity();
-    }
-
-    void ApplyGravity()
-    {
-        transform.position += gravityDirection * gravityStr * Time.deltaTime;
+        this.transform.up = -gravityDirection;
     }
 }
