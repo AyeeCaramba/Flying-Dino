@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(GravityController))]
 [RequireComponent(typeof(OrbitalRotation))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
 
     #region Variables
@@ -57,6 +58,10 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody2D rBody;
 
+    GravityController gravController;
+
+    OrbitalRotation orbitController;
+
     new Collider2D collider;
 
     #endregion
@@ -89,16 +94,31 @@ public class PlayerController : MonoBehaviour
         rBody = GetComponent<Rigidbody2D>();
 
         collider = GetComponent<Collider2D>();
+
+        gravController = GetComponent<GravityController>();
+
+        orbitController = GetComponent<OrbitalRotation>();
     }
 
     // Use this for initialization
     void Start ()
     {
-        PlayerManager.instance.localPlayers.Add(this);
         PlayerManager.instance.players.Add(this);
 
         playerNumber = PlayerManager.instance.players.Count;
-        localPlayerNumber = PlayerManager.instance.localPlayers.Count;
+
+        if (!isLocalPlayer)
+        {
+            gravController.enabled = false;
+            orbitController.enabled = false;
+            enabled = false;
+        }
+        else
+        {
+            PlayerManager.instance.localPlayers.Add(this);
+            localPlayerNumber = PlayerManager.instance.localPlayers.Count;
+        }
+
     }
 	
 	// Update is called once per frame

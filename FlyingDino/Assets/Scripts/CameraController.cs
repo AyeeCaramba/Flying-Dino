@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
+
+    NetworkManager netManager;
 
     Camera cam;
 
@@ -29,26 +32,30 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         cam = GetComponent<Camera>();
+        netManager = FindObjectOfType<NetworkManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckPlayerPositions();
-
-        switch (zoomType)
+        if (PlayerManager.instance.players.Count > 0)
         {
-            case ZoomType.Out:
-                ZoomOut();
-                break;
-            case ZoomType.In:
-                ZoomIn();
-                break;
-            default:
-                break;
-        }
+            CheckPlayerPositions();
 
-        Follow();
+            switch (zoomType)
+            {
+                case ZoomType.Out:
+                    ZoomOut();
+                    break;
+                case ZoomType.In:
+                    ZoomIn();
+                    break;
+                default:
+                    break;
+            }
+
+            Follow();
+        }
     }
 
     void CheckPlayerPositions()
