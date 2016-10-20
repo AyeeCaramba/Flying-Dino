@@ -4,6 +4,7 @@ using System.Collections;
 public class OrbitalRotation : MonoBehaviour
 {
 
+
     #region Variables
 
     #region Modifiers
@@ -34,7 +35,6 @@ public class OrbitalRotation : MonoBehaviour
             if (reference.planetTransforms != null &&
                 PlanetManager.instance.planetTransforms.Count > 0)
             {
-
                 float result = float.MaxValue;
                 Transform target = null;
 
@@ -80,7 +80,7 @@ public class OrbitalRotation : MonoBehaviour
             else return Vector3.zero;
         }
     }
-    
+
     void Update()
     {
         CorrectionCheck();
@@ -95,6 +95,7 @@ public class OrbitalRotation : MonoBehaviour
             transform.up = gravityDirection;
         else
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(transform.forward, gravityDirection), correctionSpeed * Time.deltaTime);
+
     }
 
     void CorrectionCheck()

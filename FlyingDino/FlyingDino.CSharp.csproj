@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\GravityController.cs" />
     <Compile Include="Assets\Scripts\OrbitalRotation.cs" />
     <Compile Include="Assets\Scripts\PlanetManager.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Bullet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
