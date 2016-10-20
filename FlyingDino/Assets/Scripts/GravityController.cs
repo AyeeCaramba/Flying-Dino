@@ -61,6 +61,8 @@ public class GravityController : MonoBehaviour
 
     void ApplyGravity()
     {
-        transform.position += gravityDirection * gravityStr * Time.deltaTime;
+        Vector3 dir = gravityDirection;
+        rigid.velocity += new Vector2(dir.x, dir.y) * gravityStr * Time.deltaTime;
+        //Debug.Log(rigid.velocity);
     }
 }
