@@ -28,4 +28,8 @@ public class Bullet : MonoBehaviour
         transform.position += transform.right * bulletSpeed * Time.deltaTime;
         gravCont.gravityStr -= diminishingGravRate * Time.deltaTime;
     }
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Planet") Destroy(this.gameObject);
+    }
 }
