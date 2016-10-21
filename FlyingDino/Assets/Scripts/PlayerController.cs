@@ -1,19 +1,11 @@
 ﻿using UnityEngine;
-<<<<<<< Updated upstream
 using UnityEngine.Networking;
-=======
->>>>>>> Stashed changes
-using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(GravityController))]
 [RequireComponent(typeof(OrbitalRotation))]
-<<<<<<< Updated upstream
 public class PlayerController : NetworkBehaviour
-=======
-public class PlayerController : MonoBehaviour
->>>>>>> Stashed changes
 {
 
     #region Variables
@@ -41,9 +33,13 @@ public class PlayerController : MonoBehaviour
     bool jumpButton;
     string jumpButtonName = "Jump";
 
-    bool attackButtonDown;
-    bool attackButtonUp;
-    bool attackButton;
+
+    [HideInInspector]
+    public bool attackButtonDown;
+    [HideInInspector]
+    public bool attackButtonUp;
+    [HideInInspector]
+    public bool attackButton;
     string attackButtonName = "Attack";
 
     #endregion
@@ -55,7 +51,8 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask groundLayer;
 
-    bool facingRight;
+    [HideInInspector]
+    public bool facingRight;
 
     public float groundDistance = 0.1f;
 
@@ -64,14 +61,11 @@ public class PlayerController : MonoBehaviour
     #region Classes
 
     Rigidbody2D rBody;
-
-<<<<<<< Updated upstream
+    
     GravityController gravController;
 
     OrbitalRotation orbitController;
-
-=======
->>>>>>> Stashed changes
+    
     new Collider2D collider;
 
     #endregion
@@ -102,26 +96,14 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         rBody = GetComponent<Rigidbody2D>();
-
         collider = GetComponent<Collider2D>();
-
-<<<<<<< Updated upstream
         gravController = GetComponent<GravityController>();
-
         orbitController = GetComponent<OrbitalRotation>();
-=======
-        PlayerManager.instance.localPlayers.Add(this);
-        PlayerManager.instance.players.Add(this);
-
-        playerNumber = PlayerManager.instance.players.Count;
-        localPlayerNumber = PlayerManager.instance.localPlayers.Count;
->>>>>>> Stashed changes
     }
 
     // Use this for initialization
     void Start ()
     {
-<<<<<<< Updated upstream
         PlayerManager.instance.players.Add(this);
 
         playerNumber = PlayerManager.instance.players.Count;
@@ -139,10 +121,8 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-=======
 	    
-	}
->>>>>>> Stashed changes
+	
 	
 	// Update is called once per frame
 	void Update ()
@@ -189,12 +169,9 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        Debug.Log(isGrounded);
         if(isGrounded && jumpButtonDown)
         {
             rBody.velocity += new Vector2(transform.up.x, transform.up.y) * jumpForce;
-
-            Debug.Log((Vector2)transform.TransformDirection(Vector2.up) * jumpForce);
         }
     }
 

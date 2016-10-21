@@ -29,10 +29,7 @@ public class PlayerManager : MonoBehaviour
         else Destroy(gameObject);
 
         players = new List<PlayerController>();
-<<<<<<< Updated upstream
         localPlayers = new List<PlayerController>();
-=======
->>>>>>> Stashed changes
     }
 
     void OnLevelWasLoaded()
