@@ -21,11 +21,14 @@ public class PlayerController : NetworkBehaviour
 
     public float fallModifier;
 
+    public float jumpTimer;
+    public float minimumJumpTimer;
+
     #endregion
 
     #region Input
 
-    Vector2 moveVector;
+    Vector2 inputVector;
     string moveVectorXName = "LSH";
     string moveVectorYName = "LSV";
 
@@ -45,6 +48,11 @@ public class PlayerController : NetworkBehaviour
 
     int localPlayerNumber;
     int playerNumber;
+
+    bool startedJump;
+    bool jumpFinished;
+
+    float currentJumpTimer;
 
     public LayerMask groundLayer;
 
@@ -72,9 +80,11 @@ public class PlayerController : NetworkBehaviour
     {
         get
         {
-            Debug.DrawLine(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)), transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)) - (transform.up * groundDistance), Color.red, 0.05f);
+            //Debug.DrawLine(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)), transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)) - (transform.up * groundDistance), Color.red, 0.05f);
 
-            if(Physics2D.Linecast(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)), transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)) - (transform.up * groundDistance), groundLayer))
+            RaycastHit2D info = Physics2D.Raycast(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)), -transform.up, groundDistance);
+
+            if (info.collider != null && info.transform != transform)
                 return true;
             
             return false;
@@ -138,7 +148,7 @@ public class PlayerController : NetworkBehaviour
 
     void GetInput()
     {
-        moveVector = new Vector2(Input.GetAxis(moveVectorXName + localPlayerNumber), Input.GetAxis(moveVectorYName + localPlayerNumber));
+        inputVector = new Vector2(Input.GetAxis(moveVectorXName + localPlayerNumber), Input.GetAxis(moveVectorYName + localPlayerNumber));
 
         jumpButtonDown = Input.GetButtonDown(jumpButtonName + localPlayerNumber);
         jumpButtonUp = Input.GetButtonUp(jumpButtonName + localPlayerNumber);
@@ -151,7 +161,7 @@ public class PlayerController : NetworkBehaviour
 
     void ApplyMovement()
     {
-        Vector2 targetVelocity = new Vector2(moveVector.x, 0);
+        Vector2 targetVelocity = new Vector2(inputVector.x, 0);
 
         targetVelocity = targetVelocity * targetSpeed;
 
@@ -167,12 +177,45 @@ public class PlayerController : NetworkBehaviour
     void Jump()
     {
         Debug.Log(isGrounded);
-        if(isGrounded && jumpButtonDown)
+        if(isGrounded && !startedJump)
         {
-            rBody.velocity += new Vector2(transform.up.x, transform.up.y) * jumpForce;
-
-            Debug.Log((Vector2)transform.TransformDirection(Vector2.up) * jumpForce);
+            if (jumpButtonDown)
+            {
+                startedJump = true;
+                currentJumpTimer = 0;
+            }
         }
+        else if (isGrounded && jumpFinished)
+        {
+            startedJump = false;
+            jumpFinished = false;
+        }
+
+        if (inputVector.y < 0 && !isGrounded)
+        {
+            Debug.Log(inputVector);
+            rBody.velocity += new Vector2(-transform.up.x, -transform.up.y) * fallModifier;
+
+            /*
+            Quaternion rotation = Quaternion.Euler(x,y,z);
+            Vector3 myVector = Vector3.one;
+            Vector3 rotateVector = rotation * myVector; 
+            rotate velocity maybe?
+            */
+        }
+
+
+        if (startedJump && !jumpFinished && (jumpButton || currentJumpTimer < minimumJumpTimer) && currentJumpTimer < jumpTimer)
+        {
+            currentJumpTimer += Time.deltaTime;
+            rBody.velocity += new Vector2(transform.up.x, transform.up.y) * jumpForce * Time.deltaTime;
+        }
+        else if (startedJump && !jumpFinished) jumpFinished = true;
+    }
+
+    float PercentageRange(float min, float max, float val)
+    {
+        return (val - min) / (max - min);
     }
 
     #endregion

@@ -70,8 +70,8 @@ public class CameraController : MonoBehaviour
                 zoomType = ZoomType.Out;
                 furthestTarget = pc.transform.position;
             }
-            Debug.Log(cam.WorldToViewportPoint(pc.transform.position));
-            Debug.Log(zoomType);
+            //Debug.Log(cam.WorldToViewportPoint(pc.transform.position));
+            //Debug.Log(zoomType);
         }
 
         if (zoomType != ZoomType.Out)
@@ -83,7 +83,7 @@ public class CameraController : MonoBehaviour
                 if (cam.WorldToViewportPoint(pc.transform.position).x < 0.5f - (innerClipRange * 0.5f) || cam.WorldToViewportPoint(pc.transform.position).x > 0.5f + (innerClipRange * 0.5f) ||
                     cam.WorldToViewportPoint(pc.transform.position).y < 0.5f - (innerClipRange * 0.5f) || cam.WorldToViewportPoint(pc.transform.position).y > 0.5f + (innerClipRange * 0.5f)) allPlayersIn = false;
             }
-            Debug.Log(zoomType);
+            //Debug.Log(zoomType);
             if (allPlayersIn) zoomType = ZoomType.In;
         }
     }
