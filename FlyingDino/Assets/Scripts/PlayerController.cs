@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
-using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
@@ -51,6 +51,7 @@ public class PlayerController : NetworkBehaviour
 
     bool startedJump;
     bool jumpFinished;
+    bool velocityReset = false;
 
     float currentJumpTimer;
 
@@ -82,10 +83,13 @@ public class PlayerController : NetworkBehaviour
         {
             //Debug.DrawLine(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)), transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)) - (transform.up * groundDistance), Color.red, 0.05f);
 
-            RaycastHit2D info = Physics2D.Raycast(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .95f)), -transform.up, groundDistance);
+            Debug.DrawRay(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .90f)), -transform.up, Color.black);
 
-            if (info.collider != null && info.transform != transform)
-                return true;
+            List<RaycastHit2D> info = new List<RaycastHit2D>(Physics2D.RaycastAll(transform.position - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .90f)), -transform.up, groundDistance));
+
+            foreach(RaycastHit2D hitInfo in info)
+                if (hitInfo.collider != null && hitInfo.transform != transform)
+                    return true;
             
             return false;
         }
@@ -189,21 +193,27 @@ public class PlayerController : NetworkBehaviour
         {
             startedJump = false;
             jumpFinished = false;
+            velocityReset = false;
         }
 
-        if (inputVector.y < 0 && !isGrounded)
+        else if (inputVector.y < 0 && !isGrounded)
         {
             Debug.Log(inputVector);
             rBody.velocity += new Vector2(-transform.up.x, -transform.up.y) * fallModifier;
 
-            /*
-            Quaternion rotation = Quaternion.Euler(x,y,z);
-            Vector3 myVector = Vector3.one;
-            Vector3 rotateVector = rotation * myVector; 
-            rotate velocity maybe?
-            */
         }
 
+        if(!isGrounded && jumpFinished)
+        {
+            Vector3 tempVel = rBody.velocity;
+            Vector3 tempPos = transform.position + new Vector3(rBody.velocity.x, rBody.velocity.y, 0);
+            
+            if (!velocityReset && checkTempGround(tempPos))
+            {
+                resetVerticalVelocity();
+                velocityReset = true;
+            }
+        }
 
         if (startedJump && !jumpFinished && (jumpButton || currentJumpTimer < minimumJumpTimer) && currentJumpTimer < jumpTimer)
         {
@@ -216,6 +226,26 @@ public class PlayerController : NetworkBehaviour
     float PercentageRange(float min, float max, float val)
     {
         return (val - min) / (max - min);
+    }
+
+    bool checkTempGround(Vector3 pos)
+    {
+        Debug.DrawRay(pos - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .90f)), -transform.up, Color.black);
+
+        List<RaycastHit2D> info = new List<RaycastHit2D>(Physics2D.RaycastAll(pos - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .90f)), -transform.up, groundDistance));
+
+        foreach (RaycastHit2D hitInfo in info)
+            if (hitInfo.collider != null && hitInfo.transform != transform)
+                return true;
+
+        return false;
+    }
+
+    void resetVerticalVelocity()
+    {
+        rBody.velocity = transform.TransformVector(rBody.velocity);
+        rBody.velocity = new Vector2(rBody.velocity.x, 0);
+        rBody.velocity = transform.InverseTransformVector(rBody.velocity);
     }
 
     #endregion
