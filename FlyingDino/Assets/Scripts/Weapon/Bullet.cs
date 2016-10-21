@@ -12,6 +12,8 @@ public class Bullet : MonoBehaviour
     public float diminishingGravRate;
     private Rigidbody2D rigid;
 
+    private float lifeTime = 5;
+
     void Start()
     {
         gravCont = GetComponent<GravityController>();
@@ -21,6 +23,8 @@ public class Bullet : MonoBehaviour
     public void Update()
     {
         UpdateBullet();
+        if (lifeTime < 0) Destroy(this.gameObject);
+        else lifeTime -= Time.deltaTime;
     }
 
     public virtual void UpdateBullet()
@@ -31,5 +35,6 @@ public class Bullet : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Planet") Destroy(this.gameObject);
+        if (other.gameObject.tag == "Player") other.gameObject.SetActive(false);
     }
 }
