@@ -7,4 +7,8 @@ public class WeaponOffset : MonoBehaviour
     public Vector3 Transform;
     public Vector3 Rotation;
     public Vector3 Scale;
+<<<<<<< HEAD
+=======
+
+>>>>>>> c3247501c16e03c6a5eee8235303298ead4cb0d9
 }

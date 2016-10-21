@@ -45,6 +45,9 @@ public class PlayerController : NetworkBehaviour
     public bool attackButton;
     string attackButtonName = "Attack";
 
+    bool barkButtonDown;
+    string barkButtonName = "Woof";
+
     #endregion
 
     #region Checks
@@ -74,6 +77,10 @@ public class PlayerController : NetworkBehaviour
     GravityController gravController;
 
     OrbitalRotation orbitController;
+
+    Animator animController;
+
+    Gun gun;
 
     new Collider2D collider;
 
@@ -116,6 +123,10 @@ public class PlayerController : NetworkBehaviour
         gravController = GetComponent<GravityController>();
 
         orbitController = GetComponent<OrbitalRotation>();
+
+        animController = GetComponentInChildren<Animator>();
+
+        gun = GetComponentInChildren<Gun>();
     }
 
     // Use this for initialization
@@ -145,11 +156,20 @@ public class PlayerController : NetworkBehaviour
         GetInput();
         ApplyMovement();
         Jump();
+        ApplyAnimation();
     }
 
-    void OnTriggerEnter2D(Collider2D col)
+    void OnCollisionEnter2D(Collision2D other)
     {
+        Debug.Log(other.gameObject.tag + " was tiggered");
 
+        if(other.gameObject.tag == ("Bullet"))
+        {
+            if(1>0)
+            {
+                Debug.Log("Ha");
+            }
+        }
     }
 
     #endregion
@@ -157,6 +177,8 @@ public class PlayerController : NetworkBehaviour
     void GetInput()
     {
         inputVector = new Vector2(Input.GetAxis(moveVectorXName + localPlayerNumber), Input.GetAxis(moveVectorYName + localPlayerNumber));
+        if (inputVector.x > .2) facingRight = true;
+        else if (inputVector.x < -.2) facingRight = false;
 
         jumpButtonDown = Input.GetButtonDown(jumpButtonName + localPlayerNumber);
         jumpButtonUp = Input.GetButtonUp(jumpButtonName + localPlayerNumber);
@@ -165,10 +187,54 @@ public class PlayerController : NetworkBehaviour
         attackButtonDown = Input.GetButtonDown(attackButtonName + localPlayerNumber);
         attackButtonUp = Input.GetButtonUp(attackButtonName + localPlayerNumber);
         attackButton = Input.GetButton(attackButtonName + localPlayerNumber);
+
+        barkButtonDown = Input.GetButtonDown(barkButtonName + localPlayerNumber);
+    }
+
+    void ApplyAnimation()
+    {
+        Vector2 animationMovementVector = transform.TransformVector(rBody.velocity);
+
+        Debug.Log(animationMovementVector.magnitude);
+
+        if (animationMovementVector.magnitude > 1.2f)
+        {
+            animController.SetBool("IsIdle", false);
+        }
+        else
+        {
+            animController.SetBool("IsIdle", true);
+            animController.SetInteger("IdleID", Random.Range(1, 2));
+        }
+
+        if(startedJump && !animController.GetBool("Fall"))
+        {
+            animController.SetBool("IsJump", true);
+            if(jumpFinished)
+                animController.SetBool("Fall", true);
+        }
+        else if (animController.GetBool("Fall") && isGrounded)
+        {
+            animController.SetBool("IsJump", false);
+            animController.SetBool("Fall", false);
+        }
+
+        animController.SetBool("IsHoldingWeapon", gun.hasGun);
+
+        if (barkButtonDown)
+        {
+            animController.Play("DinosaurBark", 3, 0f);
+            animController.SetBool("IsBarking", true);
+            animController.SetBool("BarkingToggle", true);
+        }
     }
 
     void ApplyMovement()
     {
+        if (facingRight)
+            transform.localScale = new Vector3(1,transform.localScale.y, transform.localScale.z);
+        else
+            transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
         Vector2 targetVelocity = new Vector2(inputVector.x, 0);
 
         targetVelocity = targetVelocity * targetSpeed;

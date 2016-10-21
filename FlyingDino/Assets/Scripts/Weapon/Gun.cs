@@ -12,6 +12,8 @@ public class Gun : MonoBehaviour
 
     private bool fired = false;
 
+    public bool hasGun = false;
+
     void Start()
     {
         playerCont = transform.parent.GetComponent<PlayerController>();
@@ -72,6 +74,7 @@ public class Gun : MonoBehaviour
             GunPickup pickup = other.gameObject.GetComponent<GunPickup>();
             if (pickup.canPickup && bulletPrefab != pickup.bulletPrefab)
             {
+                hasGun = true;
                 ChangeBulletType(pickup.bulletPrefab);
                 GameObject obj = (GameObject)Instantiate(pickup.modelPrefab, this.transform.position, Quaternion.Euler(new Vector3(0, 90, 0)));
 
