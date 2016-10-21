@@ -4,6 +4,7 @@ using System.Collections;
 public class GunPickup : MonoBehaviour
 {
     public GameObject bulletPrefab;
+    public GameObject modelPrefab;
     public float gunRespawnTimer;
     [HideInInspector]
     public bool canPickup = true;

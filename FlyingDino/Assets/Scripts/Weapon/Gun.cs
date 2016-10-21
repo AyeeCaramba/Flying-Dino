@@ -73,6 +73,14 @@ public class Gun : MonoBehaviour
             if (pickup.canPickup && bulletPrefab != pickup.bulletPrefab)
             {
                 ChangeBulletType(pickup.bulletPrefab);
+                GameObject obj = (GameObject)Instantiate(pickup.modelPrefab, this.transform.position, Quaternion.Euler(new Vector3(0, 90, 0)));
+
+                if (this.transform.FindChild("Gun") != null)
+                    Destroy(this.transform.FindChild("Gun"));
+
+                obj.transform.parent = this.transform;
+                obj.name = "Gun";
+
                 pickup.ResetTimer();
             }
         }
