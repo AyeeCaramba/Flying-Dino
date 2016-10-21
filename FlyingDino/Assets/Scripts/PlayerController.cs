@@ -234,7 +234,7 @@ public class PlayerController : NetworkBehaviour
 
     bool checkTempGround(Vector3 pos)
     {
-        Debug.DrawRay(pos - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .90f)), -transform.up, Color.black);
+        Debug.DrawRay(pos - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .90f)), -transform.up, Color.red);
 
         List<RaycastHit2D> info = new List<RaycastHit2D>(Physics2D.RaycastAll(pos - transform.TransformDirection(new Vector3(0, collider.bounds.extents.y * .90f)), -transform.up, groundDistance));
 

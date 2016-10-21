@@ -2,7 +2,6 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(BoxCollider2D))]
 public class GravityController : MonoBehaviour
 {
     private Rigidbody2D rigid;
