@@ -36,4 +36,8 @@ public class PlayerManager : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name == "MainMenu") Destroy(gameObject);
     }
+    
+    void KillPlayer(PlayerController player) {
+        
+    }
 }

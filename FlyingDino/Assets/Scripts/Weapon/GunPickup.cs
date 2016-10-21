@@ -3,7 +3,6 @@ using System.Collections;
 
 public class GunPickup : MonoBehaviour
 {
-
     public GameObject bulletPrefab;
     public float gunRespawnTimer;
     [HideInInspector]

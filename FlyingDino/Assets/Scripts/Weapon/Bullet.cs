@@ -13,6 +13,7 @@ public class Bullet : MonoBehaviour
     private Rigidbody2D rigid;
 
     private float lifeTime = 5;
+    public int ammoCount;
 
     void Start()
     {
@@ -35,6 +36,6 @@ public class Bullet : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Planet") Destroy(this.gameObject);
-        if (other.gameObject.tag == "Player") other.gameObject.SetActive(false);
+        if (other.gameObject.tag == "Player") Debug.Log("Hit player");
     }
 }
