@@ -73,14 +73,11 @@
     <Compile Include="Assets\Scripts\Weapon\Bullet.cs" />
     <Compile Include="Assets\Scripts\Weapon\Gun.cs" />
     <Compile Include="Assets\Scripts\Weapon\GunPickup.cs" />
-<<<<<<< HEAD
-=======
     <Compile Include="Assets\TungAssets\Scripts\Animator\RestartOnToggle.cs" />
     <Compile Include="Assets\TungAssets\Scripts\Animator\SetOnEnd.cs" />
     <Compile Include="Assets\TungAssets\Scripts\Animator\SetOnExit.cs" />
     <Compile Include="Assets\TungAssets\Scripts\Animator\TestAnimator.cs" />
     <Compile Include="Assets\TungAssets\Scripts\Animator\TransitionToLayer.cs" />
->>>>>>> c3247501c16e03c6a5eee8235303298ead4cb0d9
     <Compile Include="Assets\TungAssets\Scripts\WeaponOffset.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />

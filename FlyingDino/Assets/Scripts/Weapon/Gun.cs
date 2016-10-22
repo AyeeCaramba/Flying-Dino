@@ -5,6 +5,7 @@ public class Gun : MonoBehaviour
 {
     public GameObject bulletPrefab;
     private PlayerController playerCont;
+    public Transform gunHand;
 
     public int currentAmmo = 1;
     private float resetFireRate;
@@ -40,17 +41,23 @@ public class Gun : MonoBehaviour
         if (currentAmmo >= 0 && fireRate <= 0)
         {
             GameObject obj = Instantiate(bulletPrefab);
-            obj.transform.position += this.transform.position;
             if (playerCont.facingRight)
+            {
                 obj.transform.rotation = this.transform.rotation;
+                obj.transform.position += this.transform.position;
+            }
             else
-                obj.transform.rotation = new Quaternion(transform.rotation.x, -transform.rotation.y, transform.rotation.z, transform.rotation.w);
+            {
+                obj.transform.localScale = new Vector3(obj.transform.lossyScale.x, -obj.transform.lossyScale.y, obj.transform.lossyScale.z);
+                obj.transform.position -= this.transform.position;
+            }
             Physics2D.IgnoreCollision(GetComponent<BoxCollider2D>(), obj.GetComponent<BoxCollider2D>());
             SetFire();
         }
     }
 
-    void SetFire() {
+    void SetFire()
+    {
         currentAmmo--;
         fired = true;
         fireRate = resetFireRate;
@@ -76,12 +83,16 @@ public class Gun : MonoBehaviour
             {
                 hasGun = true;
                 ChangeBulletType(pickup.bulletPrefab);
-                GameObject obj = (GameObject)Instantiate(pickup.modelPrefab, this.transform.position, Quaternion.Euler(new Vector3(0, 90, 0)));
+                GameObject obj = (GameObject)Instantiate(pickup.modelPrefab);
+                obj.transform.parent = gunHand;
+                obj.transform.localPosition =
+                    new Vector3(-0.04041304f, 0.000799284F, -0.001902708f);
+                obj.transform.localRotation =
+                    Quaternion.Euler(new Vector3(-35.4891f, -92.111f, -87.2822f));
 
                 if (this.transform.FindChild("Gun") != null)
                     Destroy(this.transform.FindChild("Gun"));
 
-                obj.transform.parent = this.transform;
                 obj.name = "Gun";
 
                 pickup.ResetTimer();
